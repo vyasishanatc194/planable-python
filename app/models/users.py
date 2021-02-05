@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(null=True, blank=True, unique=True)
     username = models.CharField(max_length=55, blank=True, null=True,default='')
     full_name = models.CharField(max_length=55, blank=True)
-    profile_image = models.ImageField(upload_to="user_profile_image", null=True,  blank=True, verbose_name=_("Profile Image"))
+    profile_image = models.ImageField(upload_to="user_profile_image", null=True,  blank=True, verbose_name=_("ProfileImage"))
     date_of_birth = models.DateField(null=True, blank=True)
     city = models.ForeignKey("app.City", on_delete=models.CASCADE, related_name="City", null=True, blank=True)
 
@@ -73,9 +73,9 @@ class UserProfileImage(ActivityTracking):
     profile_image = models.ImageField(upload_to="profile_images", null=True,  blank=True, verbose_name=_("Profile Image"))
 
     def __str__(self):
-        return f"{self.user.email}"
+        return f"{self.user.pk}"
 
     class Meta:
-        verbose_name = "Creator Review"
-        verbose_name_plural = "Creator reviews"
+        verbose_name = "Profile Image"
+        verbose_name_plural = "Profile Images"
         ordering = ["-created_at"]

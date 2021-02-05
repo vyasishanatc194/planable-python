@@ -27,7 +27,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'full_name', 'token', 'password', 'city', 'profile_image', 'date_of_birth']
+        fields = ['id', 'email', 'full_name', 'token', 'password', 'city', 'date_of_birth']
     
         extra_kwargs = {"password":
                                 {"write_only": True}
@@ -37,7 +37,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         """
         custom 'create' so that password gets hashed!
         """
-        print(validated_data)
         password = validated_data.pop('password', None)
         city = validated_data.pop('city', None)
         check_city = City.objects.filter(pk=city)
@@ -54,3 +53,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def get_token(self, obj):
         return f"Token {Token.objects.get_or_create(user=obj)[0]}"
+
+
+class UserViewSerializer(serializers.ModelSerializer):
+    """
+    User View serializer
+    """      
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'full_name']

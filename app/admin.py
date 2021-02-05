@@ -2,7 +2,14 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin
-from .models import User, UserProfileImage, City
+from .models import(
+    User,
+    UserProfileImage,
+    City,
+    Plan,
+    PostalCode,
+    Category,
+)
 from .forms import AccountUpdateForm, AccountCreationForm
 from django.utils.translation import ugettext_lazy as _
 
@@ -73,6 +80,23 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ["pk", "city"]
 
 
+class CategoryAdmin(admin.ModelAdmin):
+    list_per_page = 10
+    list_display = ["pk", "category_name"]
+
+
+class PlanAdmin(admin.ModelAdmin):
+    list_per_page = 10
+    list_display = ["pk", "title", "user"]
+
+
+class PostalCodeAdmin(admin.ModelAdmin):
+    list_per_page = 10
+    list_display = ["pk", "city", "postal_code"]
+
 admin.site.register(User, UserAdmin)
 admin.site.register(UserProfileImage, UserProfileImageAdmin)
 admin.site.register(City, CityAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Plan, PlanAdmin)
+admin.site.register(PostalCode, PostalCodeAdmin)

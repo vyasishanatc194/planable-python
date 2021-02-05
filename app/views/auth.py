@@ -48,20 +48,30 @@ class LoginAPIView(APIView):
     """
     User Login View
     """
-    def post(self, request, format=None):
-        email_or_username = request.data.get("email_or_username", None)
-        password = request.data.get("password", None)
+    serializer_class = UserRegisterSerializer
 
-        account = authenticate(email=email_or_username, password=password)
-        if not account:
-            user = User.objects.filter(username=email_or_username)
-            if user:
-                account = authenticate(email=user[0].email, password=password)
+    def post(self, request, format=None):
+        email = request.data.get("email", None)
+        password = request.data.get("password", None)
+        account = authenticate(email=email, password=password)
         
         if account is not None:
             login(request, account)
-            serializer = UserProfileSerializer(account, context={'request':request})
+            serializer = self.serializer_class(account, context={'request':request})
             return custom_response(True, status.HTTP_200_OK, "Login Successful!", serializer.data)
         else:
             message = "Email/password combination invalid"
             return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+
+
+class LogoutAPIView(APIView):
+    """
+    User Logout View
+    """
+    permission_classes = (IsAccountOwner,)
+
+    def post(self, request, format=None):
+        request.user.auth_token.delete()
+        logout(request)
+        message = "Logout successful!"
+        return custom_response(True, status.HTTP_200_OK, message)
