@@ -4,11 +4,12 @@ from rest_framework import status
 from planable.permissions import IsAccountOwner
 from ..models import Plan, Category, PostalCode
 from ..serializers import PlanCreateSerializer, CategoryListingSerializer, PostalCodeListingSerializer, PlanDetailSerializer
+import datetime
 
 
 class PlanCreateAPIView(APIView):
     """
-    User Sign up view
+    Plan creation view
     """
     serializer_class = PlanCreateSerializer
     permission_classes = (IsAccountOwner,)
@@ -24,7 +25,7 @@ class PlanCreateAPIView(APIView):
 
 class CategoryListingAPIView(APIView):
     """
-    User Sign up view
+    Category listing View
     """
     serializer_class = CategoryListingSerializer
     permission_classes = ()
@@ -43,7 +44,7 @@ class CategoryListingAPIView(APIView):
 
 class PostalCodeListingAPIView(APIView):
     """
-    User Sign up view
+    Postal code listing view filtered by city
     """
     serializer_class = PostalCodeListingSerializer
     permission_classes = ()
@@ -62,7 +63,7 @@ class PostalCodeListingAPIView(APIView):
 
 class PlanDetailAPIView(APIView):
     """
-    User Sign up view
+    Plan detail View
     """
     serializer_class = PlanDetailSerializer
     permission_classes = ()
@@ -75,4 +76,45 @@ class PlanDetailAPIView(APIView):
 
         serializer = self.serializer_class(plan.first(), context={"request": request})
         message = "Plan detail fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+
+
+class PlanListingAPIView(APIView):
+    """
+    Plan listing view with filters
+    """
+    serializer_class = PlanDetailSerializer
+    permission_classes = ()
+
+    def get(self, request):
+        category = request.GET.get('category', None)
+        search = request.GET.get('search', None)
+        location = request.GET.get('location', None)
+        plans = Plan.objects.filter(active=True, plan_datetime__gte=datetime.datetime.now())
+        if category:
+            plans = plans.filter(category=category)
+        if search:
+            plans = plans.filter(title__icontains=search)
+        if location:
+            plans = plans.filter(city__city__icontains=location)    
+
+        serializer = self.serializer_class(plans, many=True, context={"request": request})
+        message = "Plans fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+
+
+class MyPlanListingAPIView(APIView):
+    """
+    My plans listing view
+    """
+    serializer_class = PlanDetailSerializer
+    permission_classes = (IsAccountOwner,)
+
+    def get(self, request):
+        upcoming = request.GET.get('upcoming', None)
+        plans = Plan.objects.filter(active=True, user=request.user.pk)
+        if upcoming:
+            plans = plans.filter(plan_datetime__gte=datetime.datetime.now())
+        serializer = self.serializer_class(plans, many=True, context={"request": request})
+        message = "Plans fetched Successfully!"
         return custom_response(True, status.HTTP_200_OK, message, serializer.data)

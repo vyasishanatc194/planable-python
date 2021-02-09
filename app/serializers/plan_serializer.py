@@ -9,15 +9,14 @@ class PlanCreateSerializer(serializers.ModelSerializer):
     """
     title = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
-    plan_date = serializers.CharField(required=True)
-    plan_time = serializers.CharField(required=True)
+    plan_datetime = serializers.DateTimeField(required=True)
     location = serializers.CharField(required=True)
     spaces_available = serializers.IntegerField(required=True)
 
 
     class Meta:
         model = Plan
-        fields = ['title', 'user', 'description', 'plan_date', 'plan_time', 'location', 'city', 'postal_code', 'spaces_available', 'category', 'plan_image', 'hashtags']
+        fields = ['title', 'user', 'description', 'plan_datetime', 'location', 'city', 'postal_code', 'spaces_available', 'category', 'plan_image', 'hashtags']
 
 
 class CategoryListingSerializer(serializers.ModelSerializer):
@@ -51,12 +50,13 @@ class PlanDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        fields = ['title', 'user', 'description', 'plan_date', 'plan_time', 'location', 'joinees', 'city', 'postal_code', 'spaces_available', 'category', 'plan_image', 'hashtags']
+        fields = ['title', 'user', 'description', 'plan_datetime', 'location', 'joinees', 'city', 'postal_code', 'spaces_available', 'category', 'plan_image', 'hashtags']
 
     def get_joinees(self, instance):
-        #TODO count total users whoc joined plan
+        #TODO count total users who joined plan
         return 0
 
     def get_hashtags(self, instance):
         hashtags = instance.hashtags.split(',')
-        return hashtags
+        formatted_hashtags = [hashtag.strip() for hashtag in hashtags]
+        return formatted_hashtags
