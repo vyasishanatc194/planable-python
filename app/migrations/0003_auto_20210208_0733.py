@@ -6,21 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0002_auto_20210205_1001'),
+        ("app", "0002_auto_20210205_1001"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='plan',
-            name='plan_date',
+            model_name="plan",
+            name="plan_date",
         ),
         migrations.RemoveField(
-            model_name='plan',
-            name='plan_time',
+            model_name="plan",
+            name="plan_time",
         ),
         migrations.AddField(
-            model_name='plan',
-            name='plan_datetime',
+            model_name="plan",
+            name="plan_datetime",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

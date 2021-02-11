@@ -7,40 +7,55 @@ class PlanCreateSerializer(serializers.ModelSerializer):
     """
     PlanCreateSerializer serializer
     """
+
     title = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
     plan_datetime = serializers.DateTimeField(required=True)
     location = serializers.CharField(required=True)
     spaces_available = serializers.IntegerField(required=True)
 
-
     class Meta:
         model = Plan
-        fields = ['title', 'user', 'description', 'plan_datetime', 'location', 'city', 'postal_code', 'spaces_available', 'category', 'plan_image', 'hashtags']
+        fields = [
+            "title",
+            "user",
+            "description",
+            "plan_datetime",
+            "location",
+            "city",
+            "postal_code",
+            "spaces_available",
+            "category",
+            "plan_image",
+            "hashtags",
+        ]
 
 
 class CategoryListingSerializer(serializers.ModelSerializer):
     """
     Category serializer
     """
+
     class Meta:
         model = Category
-        fields = ['id', 'category_name', 'featured']
+        fields = ["id", "category_name", "featured"]
 
 
 class PostalCodeListingSerializer(serializers.ModelSerializer):
     """
     PostalCode serializer
     """
+
     class Meta:
         model = PostalCode
-        fields = ['id', 'city', 'postal_code']
+        fields = ["id", "city", "postal_code"]
 
 
 class PlanDetailSerializer(serializers.ModelSerializer):
     """
     Plan Detail serializer
     """
+
     city = CityListingSerializer()
     postal_code = PostalCodeListingSerializer()
     category = CategoryListingSerializer()
@@ -50,13 +65,26 @@ class PlanDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        fields = ['title', 'user', 'description', 'plan_datetime', 'location', 'joinees', 'city', 'postal_code', 'spaces_available', 'category', 'plan_image', 'hashtags']
+        fields = [
+            "title",
+            "user",
+            "description",
+            "plan_datetime",
+            "location",
+            "joinees",
+            "city",
+            "postal_code",
+            "spaces_available",
+            "category",
+            "plan_image",
+            "hashtags",
+        ]
 
     def get_joinees(self, instance):
-        #TODO count total users who joined plan
+        # TODO count total users who joined plan
         return 0
 
     def get_hashtags(self, instance):
-        hashtags = instance.hashtags.split(',')
+        hashtags = instance.hashtags.split(",")
         formatted_hashtags = [hashtag.strip() for hashtag in hashtags]
         return formatted_hashtags

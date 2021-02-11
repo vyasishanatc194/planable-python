@@ -8,76 +8,213 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0001_initial'),
+        ("app", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Date when created.', null=True, verbose_name='Created At')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Date when updated.', null=True, verbose_name='Updated At')),
-                ('category_name', models.CharField(blank=True, max_length=155)),
-                ('featured', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Date when created.",
+                        null=True,
+                        verbose_name="Created At",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Date when updated.",
+                        null=True,
+                        verbose_name="Updated At",
+                    ),
+                ),
+                ("category_name", models.CharField(blank=True, max_length=155)),
+                ("featured", models.BooleanField(default=False)),
             ],
             options={
-                'verbose_name': 'Category',
-                'verbose_name_plural': 'Categories',
-                'ordering': ['-created_at'],
+                "verbose_name": "Category",
+                "verbose_name_plural": "Categories",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AlterModelOptions(
-            name='userprofileimage',
-            options={'ordering': ['-created_at'], 'verbose_name': 'Profile Image', 'verbose_name_plural': 'Profile Images'},
+            name="userprofileimage",
+            options={
+                "ordering": ["-created_at"],
+                "verbose_name": "Profile Image",
+                "verbose_name_plural": "Profile Images",
+            },
         ),
         migrations.AlterField(
-            model_name='user',
-            name='profile_image',
-            field=models.ImageField(blank=True, null=True, upload_to='user_profile_image', verbose_name='ProfileImage'),
+            model_name="user",
+            name="profile_image",
+            field=models.ImageField(
+                blank=True,
+                null=True,
+                upload_to="user_profile_image",
+                verbose_name="ProfileImage",
+            ),
         ),
         migrations.CreateModel(
-            name='PostalCode',
+            name="PostalCode",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Date when created.', null=True, verbose_name='Created At')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Date when updated.', null=True, verbose_name='Updated At')),
-                ('postal_code', models.CharField(blank=True, max_length=55)),
-                ('city', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='CityCode', to='app.city')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Date when created.",
+                        null=True,
+                        verbose_name="Created At",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Date when updated.",
+                        null=True,
+                        verbose_name="Updated At",
+                    ),
+                ),
+                ("postal_code", models.CharField(blank=True, max_length=55)),
+                (
+                    "city",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="CityCode",
+                        to="app.city",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Postal Code',
-                'verbose_name_plural': 'Postal Codes',
-                'ordering': ['-created_at'],
+                "verbose_name": "Postal Code",
+                "verbose_name_plural": "Postal Codes",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Plan',
+            name="Plan",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Date when created.', null=True, verbose_name='Created At')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Date when updated.', null=True, verbose_name='Updated At')),
-                ('title', models.CharField(blank=True, max_length=155)),
-                ('description', models.TextField(blank=True, null=True)),
-                ('plan_date', models.DateField(blank=True, null=True)),
-                ('plan_time', models.TimeField(blank=True, null=True)),
-                ('location', models.TextField(blank=True, null=True)),
-                ('spaces_available', models.PositiveIntegerField(blank=True, null=True)),
-                ('plan_image', models.ImageField(blank=True, null=True, upload_to='plan_images', verbose_name='PlanImages')),
-                ('hashtags', models.TextField(blank=True, null=True)),
-                ('featured', models.BooleanField(default=False)),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='Category', to='app.category')),
-                ('city', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='PlanCity', to='app.city')),
-                ('postal_code', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='PostalCode', to='app.postalcode')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='User', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Date when created.",
+                        null=True,
+                        verbose_name="Created At",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Date when updated.",
+                        null=True,
+                        verbose_name="Updated At",
+                    ),
+                ),
+                ("title", models.CharField(blank=True, max_length=155)),
+                ("description", models.TextField(blank=True, null=True)),
+                ("plan_date", models.DateField(blank=True, null=True)),
+                ("plan_time", models.TimeField(blank=True, null=True)),
+                ("location", models.TextField(blank=True, null=True)),
+                (
+                    "spaces_available",
+                    models.PositiveIntegerField(blank=True, null=True),
+                ),
+                (
+                    "plan_image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="plan_images",
+                        verbose_name="PlanImages",
+                    ),
+                ),
+                ("hashtags", models.TextField(blank=True, null=True)),
+                ("featured", models.BooleanField(default=False)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="Category",
+                        to="app.category",
+                    ),
+                ),
+                (
+                    "city",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="PlanCity",
+                        to="app.city",
+                    ),
+                ),
+                (
+                    "postal_code",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="PostalCode",
+                        to="app.postalcode",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="User",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Plan',
-                'verbose_name_plural': 'Plans',
-                'ordering': ['-created_at'],
+                "verbose_name": "Plan",
+                "verbose_name_plural": "Plans",
+                "ordering": ["-created_at"],
             },
         ),
     ]

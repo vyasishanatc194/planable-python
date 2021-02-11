@@ -11,78 +11,205 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('email', models.EmailField(blank=True, max_length=254, null=True, unique=True)),
-                ('username', models.CharField(blank=True, default='', max_length=55, null=True)),
-                ('full_name', models.CharField(blank=True, max_length=55)),
-                ('profile_image', models.ImageField(blank=True, null=True, upload_to='user_profile_image', verbose_name='Profile Image')),
-                ('date_of_birth', models.DateField(blank=True, null=True)),
-                ('unique_id', models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name='Unique Id')),
-                ('is_staff', models.BooleanField(default=False)),
-                ('is_active', models.BooleanField(default=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        blank=True, max_length=254, null=True, unique=True
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(blank=True, default="", max_length=55, null=True),
+                ),
+                ("full_name", models.CharField(blank=True, max_length=55)),
+                (
+                    "profile_image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="user_profile_image",
+                        verbose_name="Profile Image",
+                    ),
+                ),
+                ("date_of_birth", models.DateField(blank=True, null=True)),
+                (
+                    "unique_id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        unique=True,
+                        verbose_name="Unique Id",
+                    ),
+                ),
+                ("is_staff", models.BooleanField(default=False)),
+                ("is_active", models.BooleanField(default=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'verbose_name': 'User',
-                'verbose_name_plural': 'Users',
-                'ordering': ['-created_at'],
+                "verbose_name": "User",
+                "verbose_name_plural": "Users",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='City',
+            name="City",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Date when created.', null=True, verbose_name='Created At')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Date when updated.', null=True, verbose_name='Updated At')),
-                ('city', models.CharField(blank=True, max_length=55)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Date when created.",
+                        null=True,
+                        verbose_name="Created At",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Date when updated.",
+                        null=True,
+                        verbose_name="Updated At",
+                    ),
+                ),
+                ("city", models.CharField(blank=True, max_length=55)),
             ],
             options={
-                'verbose_name': 'City',
-                'verbose_name_plural': 'Cities',
-                'ordering': ['-created_at'],
+                "verbose_name": "City",
+                "verbose_name_plural": "Cities",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='UserProfileImage',
+            name="UserProfileImage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Date when created.', null=True, verbose_name='Created At')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Date when updated.', null=True, verbose_name='Updated At')),
-                ('profile_image', models.ImageField(blank=True, null=True, upload_to='profile_images', verbose_name='Profile Image')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='review_by_user', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=True, verbose_name="Active")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Date when created.",
+                        null=True,
+                        verbose_name="Created At",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Date when updated.",
+                        null=True,
+                        verbose_name="Updated At",
+                    ),
+                ),
+                (
+                    "profile_image",
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to="profile_images",
+                        verbose_name="Profile Image",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="review_by_user",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Creator Review',
-                'verbose_name_plural': 'Creator reviews',
-                'ordering': ['-created_at'],
+                "verbose_name": "Creator Review",
+                "verbose_name_plural": "Creator reviews",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.AddField(
-            model_name='user',
-            name='city',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='City', to='app.city'),
+            model_name="user",
+            name="city",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="City",
+                to="app.city",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='groups',
-            field=models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups'),
+            model_name="user",
+            name="groups",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Group",
+                verbose_name="groups",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions'),
+            model_name="user",
+            name="user_permissions",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Specific permissions for this user.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Permission",
+                verbose_name="user permissions",
+            ),
         ),
     ]

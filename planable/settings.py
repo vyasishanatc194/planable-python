@@ -39,9 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "django.contrib.sites",
+    "rest_auth",
 
     'rest_framework',
     'rest_framework.authtoken',
+    "allauth.socialaccount",
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
 
     "allauth",
     "allauth.account",
@@ -135,6 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': (
         'rest_framework.pagination.LimitOffsetPagination'

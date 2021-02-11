@@ -5,6 +5,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.utils.translation import gettext as _
 from planable.models import ActivityTracking
 from .common import City
+
 # Create your models here.
 
 
@@ -37,13 +38,25 @@ class AccountManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(null=True, blank=True, unique=True)
-    username = models.CharField(max_length=55, blank=True, null=True,default='')
+    username = models.CharField(max_length=55, blank=True, null=True, default="")
     full_name = models.CharField(max_length=55, blank=True)
-    profile_image = models.ImageField(upload_to="user_profile_image", null=True,  blank=True, verbose_name=_("ProfileImage"))
+    profile_image = models.ImageField(
+        upload_to="user_profile_image",
+        null=True,
+        blank=True,
+        verbose_name=_("ProfileImage"),
+    )
     date_of_birth = models.DateField(null=True, blank=True)
-    city = models.ForeignKey("app.City", on_delete=models.CASCADE, related_name="City", null=True, blank=True)
+    city = models.ForeignKey(
+        "app.City", on_delete=models.CASCADE, related_name="City", null=True, blank=True
+    )
 
-    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_("Unique Id"),)
+    unique_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        verbose_name=_("Unique Id"),
+    )
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -69,8 +82,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserProfileImage(ActivityTracking):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="review_by_user")
-    profile_image = models.ImageField(upload_to="profile_images", null=True,  blank=True, verbose_name=_("Profile Image"))
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="review_by_user"
+    )
+    profile_image = models.ImageField(
+        upload_to="profile_images",
+        null=True,
+        blank=True,
+        verbose_name=_("Profile Image"),
+    )
 
     def __str__(self):
         return f"{self.user.pk}"

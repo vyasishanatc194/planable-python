@@ -15,7 +15,13 @@ class City(ActivityTracking):
 
 
 class PostalCode(ActivityTracking):
-    city = models.ForeignKey("app.City", on_delete=models.CASCADE, related_name="CityCode", null=True, blank=True)
+    city = models.ForeignKey(
+        "app.City",
+        on_delete=models.CASCADE,
+        related_name="CityCode",
+        null=True,
+        blank=True,
+    )
     postal_code = models.CharField(max_length=55, blank=True)
 
     def __str__(self):

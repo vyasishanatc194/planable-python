@@ -7,16 +7,19 @@ class UserProfileImageSerializer(serializers.ModelSerializer):
     """
     UserProfileImage serializer
     """
+
     profile_image = serializers.ImageField(required=True)
+
     class Meta:
         model = UserProfileImage
-        fields = ['id', 'user', 'profile_image']
+        fields = ["id", "user", "profile_image"]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
     UserProfileSerializer serializer
     """
+
     city = CityListingSerializer()
     profile_images = serializers.SerializerMethodField()
     plans_attended = serializers.SerializerMethodField()
@@ -24,11 +27,22 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'full_name', 'city', 'date_of_birth', 'plans_attended', 'plans_hosted', 'profile_images', ]
+        fields = [
+            "id",
+            "email",
+            "full_name",
+            "city",
+            "date_of_birth",
+            "plans_attended",
+            "plans_hosted",
+            "profile_images",
+        ]
 
     def get_profile_images(self, instance):
         images = UserProfileImage.objects.filter(user=instance.pk)
-        image_serializer = UserProfileImageSerializer(images, many=True, context={'request':self.context['request']})
+        image_serializer = UserProfileImageSerializer(
+            images, many=True, context={"request": self.context["request"]}
+        )
         return image_serializer.data
 
     def get_plans_attended(self, instance):
@@ -41,10 +55,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
-        fields = ['id', 'email', 'full_name', 'city', 'date_of_birth']
+        fields = ["id", "email", "full_name", "city", "date_of_birth"]
 
     def update(self, instance, validated_data):
         for (key, value) in validated_data.items():
@@ -52,5 +65,3 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
             instance.save()
         instance.save()
         return instance
-
-
