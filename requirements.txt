@@ -6,7 +6,6 @@ cffi==1.14.4
 chardet==4.0.0
 click==7.1.2
 cryptography==3.3.1
-decouple==0.0.7
 defusedxml==0.6.0
 dj-database-url==0.5.0
 Django==3.1.6
@@ -17,6 +16,7 @@ django-heroku==0.3.1
 django-rest-auth==0.9.5
 djangorestframework==3.11.0
 idna==2.10
+python-decouple==3.4
 mypy-extensions==0.4.3
 oauthlib==3.1.0
 pathspec==0.8.1
