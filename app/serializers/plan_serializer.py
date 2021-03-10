@@ -1,6 +1,18 @@
 from rest_framework import fields, serializers
-from ..models import Plan, Category, PostalCode
+from ..models import Plan, Category, PostalCode, PlanJoiningRequest
 from ..serializers import CityListingSerializer, UserViewSerializer
+
+
+class PlanJoiningRequestListingSerializer(serializers.ModelSerializer):
+    """
+    PlanJoiningRequest serializer
+    """
+    user = UserViewSerializer()
+
+    class Meta:
+        model = PlanJoiningRequest
+        fields = ["pk", "user", "status"]
+
 
 
 class PlanCreateSerializer(serializers.ModelSerializer):
@@ -62,6 +74,7 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     user = UserViewSerializer()
     joinees = serializers.SerializerMethodField()
     hashtags = serializers.SerializerMethodField()
+    request_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Plan
@@ -71,20 +84,33 @@ class PlanDetailSerializer(serializers.ModelSerializer):
             "description",
             "plan_datetime",
             "location",
-            "joinees",
             "city",
             "postal_code",
             "spaces_available",
             "category",
             "plan_image",
             "hashtags",
+            "request_status",
+            "joinees"
         ]
 
     def get_joinees(self, instance):
-        # TODO count total users who joined plan
-        return 0
+        joinees = PlanJoiningRequest.objects.filter(plan=instance, status='ACCEPTED')
+        serializer = PlanJoiningRequestListingSerializer(joinees, many=True, context = {'request': self.context['request']})
+        joinees_data = {}
+        joinees_data['count'] = joinees.count()
+        joinees_data['data'] = serializer.data
+        return joinees_data
 
     def get_hashtags(self, instance):
         hashtags = instance.hashtags.split(",")
         formatted_hashtags = [hashtag.strip() for hashtag in hashtags]
         return formatted_hashtags
+
+    def get_request_status(self, instance):
+        user = self.context['request'].user
+        if not user.is_anonymous:
+            request_status = PlanJoiningRequest.objects.filter(plan=instance, user=user)
+            if request_status:
+                return request_status[0].status
+        return False

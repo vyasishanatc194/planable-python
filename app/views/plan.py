@@ -83,7 +83,6 @@ class PlanDetailAPIView(APIView):
     """
 
     serializer_class = PlanDetailSerializer
-    permission_classes = ()
 
     def get(self, request, pk):
         plan = Plan.objects.filter(active=True, pk=pk)

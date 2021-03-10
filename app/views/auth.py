@@ -5,6 +5,8 @@ from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from planable.permissions import IsAccountOwner
 from ..models import User, City
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from rest_auth.registration.views import SocialLoginView
 
 
 class SignUpApiView(APIView):
@@ -19,7 +21,7 @@ class SignUpApiView(APIView):
             email_check = User.objects.filter(email=request.data["email"]).distinct()
             if email_check.exists():
                 message = "Email already exists!"
-                return custom_response(True, status.HTTP_400_BAD_REQUEST, message)
+                return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
             message = "Account created successfully!"
             serializer = UserRegisterSerializer(
                 data=request.data, context={"request": request}
@@ -90,3 +92,44 @@ class LogoutAPIView(APIView):
         logout(request)
         message = "Logout successful!"
         return custom_response(True, status.HTTP_200_OK, message)
+
+
+class SaveInstagramTokenAPI(APIView):
+
+    permission_classes = (IsAccountOwner,)
+
+    def post(self, request, format=None):
+        """
+        POST method to create the data
+        """       
+        code  = request.data.get("code", None)
+        if not code:
+            message = "Instagram tokens required!"
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+        user = User.objects.get(pk=request.user.pk)
+        user.instagram_code = code
+        user.save()
+        message = "Connected to Instagram successfully!"
+        return custom_response(True, status.HTTP_200_OK, message)
+
+
+class DisconnectInstagramAPI(APIView):
+
+    permission_classes = (IsAccountOwner,)
+
+    def post(self, request, format=None):
+        """
+        POST method to create the data
+        """       
+        user = User.objects.get(pk=request.user.pk)
+        user.instagram_code = None
+        user.save()
+        message = "Disconnected from Instagram successfully!"
+        return custom_response(False, status.HTTP_200_OK, message)
+
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter

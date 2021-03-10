@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 from os import path
+import django_heroku
+import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,14 +44,17 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "rest_auth",
 
+    'social_django',
+    'rest_social_auth',
+
     'rest_framework',
     'rest_framework.authtoken',
-    "allauth.socialaccount",
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-
+    'rest_auth.registration',
     "allauth",
     "allauth.account",
+    "allauth.socialaccount",
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google', 
 
     'app',
     'corsheaders',
@@ -178,7 +184,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_ROOT = path.join(BASE_DIR, 'static').replace('\\', '/')
+# STATIC_ROOT = path.join(BASE_DIR, 'static').replace('\\', '/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+django_heroku.settings(locals())
 
 STATIC_URL = '/static/'
 
@@ -192,3 +200,11 @@ STATICFILES_FINDERS = (
 )
 
 SITE_ID = 1
+
+
+
+#Local Facebook social login
+SOCIAL_AUTH_FACEBOOK_KEY = '596410561297291'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = '73285fb88839658c99a3fa940fce10ca'  # App Secret
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', ]  # optional
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}  # optional

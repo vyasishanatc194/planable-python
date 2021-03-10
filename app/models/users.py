@@ -50,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     city = models.ForeignKey(
         "app.City", on_delete=models.CASCADE, related_name="City", null=True, blank=True
     )
+    instagram_code = models.TextField(null=True, blank=True)
 
     unique_id = models.UUIDField(
         default=uuid.uuid4,
