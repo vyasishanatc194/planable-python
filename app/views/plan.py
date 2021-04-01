@@ -8,6 +8,7 @@ from ..serializers import (
     CategoryListingSerializer,
     PostalCodeListingSerializer,
     PlanDetailSerializer,
+    HomeCategoryPlanListingSerializer,
 )
 import datetime
 
@@ -147,6 +148,23 @@ class MyPlanListingAPIView(APIView):
             plans = plans.filter(plan_datetime__gte=datetime.datetime.now())
         serializer = self.serializer_class(
             plans, many=True, context={"request": request}
+        )
+        message = "Plans fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+
+
+class HomePlanListingAPIView(APIView):
+    """
+    Plan listing view with filters
+    """
+
+    serializer_class = HomeCategoryPlanListingSerializer
+    permission_classes = ()
+
+    def get(self, request):
+        categories = Category.objects.filter(featured=True)
+        serializer = self.serializer_class(
+            categories, many=True, context={"request": request}
         )
         message = "Plans fetched Successfully!"
         return custom_response(True, status.HTTP_200_OK, message, serializer.data)

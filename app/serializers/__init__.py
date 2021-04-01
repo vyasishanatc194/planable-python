@@ -20,4 +20,5 @@ from .plan_serializer import (
     CategoryListingSerializer,
     PostalCodeListingSerializer,
     PlanDetailSerializer,
+    HomeCategoryPlanListingSerializer,
 )

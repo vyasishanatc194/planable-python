@@ -1,6 +1,7 @@
 from rest_framework import fields, serializers
 from ..models import Plan, Category, PostalCode, PlanJoiningRequest
 from ..serializers import CityListingSerializer, UserViewSerializer
+import datetime
 
 
 class PlanJoiningRequestListingSerializer(serializers.ModelSerializer):
@@ -114,3 +115,20 @@ class PlanDetailSerializer(serializers.ModelSerializer):
             if request_status:
                 return request_status[0].status
         return False
+
+
+
+class HomeCategoryPlanListingSerializer(serializers.ModelSerializer):
+    """
+    Home Category plan serializer
+    """
+    plans = serializers.SerializerMethodField()
+    class Meta:
+        model = Category
+        fields = ["id", "category_name", "featured", "plans"]
+
+    def get_plans(self, instance):
+        plans = Plan.objects.filter(active=True, plan_datetime__gte=datetime.datetime.now(), category=instance)[:5]   
+        serializer = PlanDetailSerializer(plans, many=True, context={'request': self.context['request']})
+        return serializer.data
+
