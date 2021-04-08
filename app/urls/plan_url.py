@@ -17,5 +17,6 @@ urlpatterns = [
         "postal-codes/", views.PostalCodeListingAPIView.as_view(), name="postal-codes"
     ),
     path("home-plans/", views.HomePlanListingAPIView.as_view(), name="home-plans"),
+    path("attended-plans/", views.PlanAttendedAPIView.as_view(), name="attended-plans"),
     
 ]

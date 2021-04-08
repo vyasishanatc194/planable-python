@@ -16,5 +16,6 @@ from .plan import (
     PlanListingAPIView,
     MyPlanListingAPIView,
     HomePlanListingAPIView,
+    PlanAttendedAPIView,
 )
 from .plan_requests import PlanJoiningRequestAPIView, AcceptDeclineJoiningRequestAPIView

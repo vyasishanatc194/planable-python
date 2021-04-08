@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from planable.helpers import custom_response, serialized_response
 from rest_framework import status
 from planable.permissions import IsAccountOwner
-from ..models import Plan, Category, PostalCode
+from ..models import Plan, Category, PostalCode, PlanJoiningRequest
 from ..serializers import (
     PlanCreateSerializer,
     CategoryListingSerializer,
@@ -143,7 +143,10 @@ class MyPlanListingAPIView(APIView):
 
     def get(self, request):
         upcoming = request.GET.get("upcoming", None)
+        user_id = request.GET.get("user_id", None)
         plans = Plan.objects.filter(active=True, user=request.user.pk)
+        if user_id:
+            plans = plans.filter(user=user_id)
         if upcoming:
             plans = plans.filter(plan_datetime__gte=datetime.datetime.now())
         serializer = self.serializer_class(
@@ -165,6 +168,26 @@ class HomePlanListingAPIView(APIView):
         categories = Category.objects.filter(featured=True)
         serializer = self.serializer_class(
             categories, many=True, context={"request": request}
+        )
+        message = "Plans fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+
+
+class PlanAttendedAPIView(APIView):
+    """
+    My plans listing view
+    """
+
+    serializer_class = PlanDetailSerializer
+    permission_classes = (IsAccountOwner,)
+
+    def get(self, request):
+        joining_requests = PlanJoiningRequest.objects.filter(user=request.user.pk, status="ACCEPTED")
+        plans = []
+        for joining_request in joining_requests:
+            plans.append(joining_request.plan)
+        serializer = self.serializer_class(
+            plans, many=True, context={"request": request}
         )
         message = "Plans fetched Successfully!"
         return custom_response(True, status.HTTP_200_OK, message, serializer.data)
