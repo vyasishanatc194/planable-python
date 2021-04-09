@@ -6,6 +6,9 @@ from django.utils.translation import gettext as _
 class Category(ActivityTracking):
     category_name = models.CharField(max_length=155, blank=True)
     featured = models.BooleanField(default=False)
+    category_image = models.ImageField(
+        upload_to="category_images", null=True, blank=True, verbose_name=_("CategoryImages")
+    )
 
     def __str__(self):
         return f"{self.pk}"

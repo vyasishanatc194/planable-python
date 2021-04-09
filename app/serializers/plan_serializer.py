@@ -1,5 +1,5 @@
 from rest_framework import fields, serializers
-from ..models import Plan, Category, PostalCode, PlanJoiningRequest
+from ..models import Plan, Category, PostalCode, PlanJoiningRequest, UserProfileImage
 from ..serializers import CityListingSerializer, UserViewSerializer
 import datetime
 
@@ -9,11 +9,23 @@ class PlanJoiningRequestListingSerializer(serializers.ModelSerializer):
     PlanJoiningRequest serializer
     """
     user = UserViewSerializer()
+    profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = PlanJoiningRequest
-        fields = ["pk", "user", "status"]
+        fields = ["pk",
+            "user",
+            "status",
+            "profile_image"
+        ]
 
+    def get_profile_image(self, instance):
+        request = self.context.get('request')
+        user_images = UserProfileImage.objects.filter(user=instance.user)
+        if user_images:
+            image = user_images.first()
+            return request.build_absolute_uri(image.profile_image.url)
+        return None
 
 
 class PlanCreateSerializer(serializers.ModelSerializer):
@@ -51,7 +63,7 @@ class CategoryListingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ["id", "category_name", "featured"]
+        fields = ["id", "category_name", "category_image", "featured"]
 
 
 class PostalCodeListingSerializer(serializers.ModelSerializer):
