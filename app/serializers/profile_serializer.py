@@ -1,5 +1,5 @@
 from rest_framework import fields, serializers
-from ..models import UserProfileImage, User, City
+from ..models import UserProfileImage, User, City, PlanJoiningRequest, Plan
 from .auth_serializer import CityListingSerializer
 
 
