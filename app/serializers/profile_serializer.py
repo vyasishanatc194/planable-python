@@ -46,12 +46,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return image_serializer.data
 
     def get_plans_attended(self, instance):
-        # TODO Add plans attended count
-        return 0
+        attendees = PlanJoiningRequest.objects.filter(user=instance.pk, status='ACCEPTED').count()
+        return attendees
 
     def get_plans_hosted(self, instance):
-        # TODO Add plans hosted count
-        return 0
+        plans = Plan.objects.filter(user=instance.pk, active=True).count()
+        return plans
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
