@@ -37,7 +37,7 @@ class AccountManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(null=True, blank=True, unique=True)
+    email = models.EmailField(null=True, blank=True)
     username = models.CharField(max_length=55, blank=True, null=True, default="")
     full_name = models.CharField(max_length=55, blank=True)
     profile_image = models.ImageField(

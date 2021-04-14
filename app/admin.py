@@ -32,12 +32,10 @@ class UserAdmin(UserAdmin):
             _("Personal info"),
             {
                 "fields": (
-                    "first_name",
-                    "last_name",
+                    "full_name",
                     "username",
                     "profile_image",
                     "date_of_birth",
-                    "city,",
                 )
             },
         ),
@@ -57,8 +55,7 @@ class UserAdmin(UserAdmin):
             {
                 "classes": ("wide",),
                 "fields": (
-                    "first_name",
-                    "last_name",
+                    "full_name",
                     "email",
                     "password1",
                     "password2",

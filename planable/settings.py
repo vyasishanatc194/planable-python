@@ -146,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': (
         'rest_framework.pagination.LimitOffsetPagination'
@@ -205,7 +205,7 @@ SITE_ID = 1
 
 
 #Local Facebook social login
-SOCIAL_AUTH_FACEBOOK_KEY = '596410561297291'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = '73285fb88839658c99a3fa940fce10ca'  # App Secret
+SOCIAL_AUTH_FACEBOOK_KEY = '1668463020029321'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = '6ac0e34f9fe685db23eee0c50babcd98'  # App Secret
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', ]  # optional
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}  # optional
