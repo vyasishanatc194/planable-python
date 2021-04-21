@@ -131,5 +131,19 @@ class DisconnectInstagramAPI(APIView):
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
 
-class FacebookLogin(SocialLoginView):
-    adapter_class = FacebookOAuth2Adapter
+    def get_response(self):
+        serializer_class = self.get_response_serializer()
+        data = {
+            'user': self.user,
+            'key': self.token
+        }
+        serializer = serializer_class(instance=data, context={'request': self.request})
+        response_status = True
+        status_code = status.HTTP_200_OK
+        message = "Login Successful!"
+        result = serializer.data
+        result_data = {'token': "Token " + result['key'], 'user': self.user.id}
+        return custom_response(response_status, status_code, message, result_data)
+
+# class FacebookLogin(SocialLoginView):
+#     adapter_class = FacebookOAuth2Adapter
