@@ -145,5 +145,8 @@ class FacebookLogin(SocialLoginView):
         result_data = {'token': "Token " + result['key'], 'user': self.user.id}
         return custom_response(response_status, status_code, message, result_data)
 
+
+
+
 # class FacebookLogin(SocialLoginView):
 #     adapter_class = FacebookOAuth2Adapter
