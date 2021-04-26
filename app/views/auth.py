@@ -53,7 +53,7 @@ class CityListingAPIView(APIView):
         serializer = self.serializer_class(
             cities, many=True, context={"request": request}
         )
-        message = "Cities fetched successfully!"
+        message = "Cities fetched successfully!!!"
         return custom_response(True, status.HTTP_200_OK, message, serializer.data)
 
 
