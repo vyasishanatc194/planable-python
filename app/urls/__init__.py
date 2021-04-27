@@ -11,5 +11,4 @@ urlpatterns = [
     path("", include(profile_url)),
     path("", include(plan_url)),
     path("", include(plan_request_url)),
-    path("accounts/", include("allauth.urls"), name='socialaccount_signup'),
 ]

@@ -22,4 +22,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('superadmin/', admin.site.urls),
     path("api/v1/", include("app.urls")),
+    path("accounts/", include("allauth.urls"), name='socialaccount_signup'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
