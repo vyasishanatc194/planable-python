@@ -32,6 +32,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "email",
             "full_name",
             "token",
+            "instagram_code",
             "password",
             "city",
             "date_of_birth",

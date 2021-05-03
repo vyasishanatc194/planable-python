@@ -31,6 +31,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "id",
             "email",
             "full_name",
+            "instagram_code",
             "city",
             "date_of_birth",
             "plans_attended",
