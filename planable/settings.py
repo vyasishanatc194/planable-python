@@ -155,7 +155,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
-    'PAGE_SIZE' : 10,
+    'PAGE_SIZE': 10,
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'SEARCH_PARAM': 'q',
 }
@@ -203,9 +203,13 @@ STATICFILES_FINDERS = (
 SITE_ID = 1
 
 
-
-#Local Facebook social login
+# Local Facebook social login
 SOCIAL_AUTH_FACEBOOK_KEY = '1668463020029321'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = '6ac0e34f9fe685db23eee0c50babcd98'  # App Secret
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', ]  # optional
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}  # optional
+
+# Instagram Login
+INSTAGRAM_APP_ID = "276073157557455"
+INSTAGRAM_APP_SECRET = "8180a1d314c9c24270c2da585de6b51d"
+INSTAGRAM_REDIRECT_URL = "https://planable.herokuapp.com/superadmin/"

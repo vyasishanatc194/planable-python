@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.views import APIView
 from ..serializers import UserRegisterSerializer, CityListingSerializer
 from planable.helpers import custom_response, serialized_response
@@ -7,6 +8,7 @@ from planable.permissions import IsAccountOwner
 from ..models import User, City
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
+from instagram_basic_display.InstagramBasicDisplay import InstagramBasicDisplay
 
 
 class SignUpApiView(APIView):
@@ -146,7 +148,35 @@ class FacebookLogin(SocialLoginView):
         return custom_response(response_status, status_code, message, result_data)
 
 
+class InstagramAPIView(APIView):
+    """
+    Class Instagram API
+    """
 
+    permission_classes = (IsAccountOwner,)
 
-# class FacebookLogin(SocialLoginView):
-#     adapter_class = FacebookOAuth2Adapter
+    def post(self, request, format=None):
+        """
+        POST method to create the data
+        """
+        try:
+            instagram_basic_display = InstagramBasicDisplay(
+                app_id=settings.INSTAGRAM_APP_ID,
+                app_secret=settings.INSTAGRAM_APP_SECRET,
+                redirect_url=settings.INSTAGRAM_REDIRECT_URL
+            )
+            code = request.data.get("code", None)
+            if not code:
+                message = "Instagram token is required!"
+                return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+            short_lived_token = instagram_basic_display.get_o_auth_token(code)
+            long_lived_token = instagram_basic_display.get_long_lived_token(short_lived_token.get('access_token'))
+            instagram_basic_display.set_access_token(long_lived_token.access_token)
+            user = User.objects.get(pk=request.user.pk)
+            user.instagram_code = long_lived_token.access_token
+            user.save()
+            message = "Connected to Instagram successfully!"
+            data = {"access_token": long_lived_token.access_token}
+            return custom_response(True, status.HTTP_200_OK, message, data)
+        except Exception as inst:
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, str(inst))

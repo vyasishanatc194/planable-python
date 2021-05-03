@@ -13,4 +13,5 @@ urlpatterns = [
     path("connect-instagram/", views.SaveInstagramTokenAPI.as_view(), name="connect-instagram"),
     path("disconnect-instagram/", views.SaveInstagramTokenAPI.as_view(), name="disconnect-instagram"),
     path('rest-auth/facebook/', views.FacebookLogin.as_view(), name='fb_login'),
+    path('instagram/', views.auth.InstagramAPIView.as_view(), name='instagram_login'),
 ]
