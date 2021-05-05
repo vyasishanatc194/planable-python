@@ -10,8 +10,9 @@ urlpatterns = [
     path("logout/", views.LogoutAPIView.as_view(), name="logout"),
     path("plan/", views.PlanCreateAPIView.as_view(), name="plan"),
     path("categories/", views.CategoryListingAPIView.as_view(), name="categories"),
-    path("connect-instagram/", views.SaveInstagramTokenAPI.as_view(), name="connect-instagram"),
-    path("disconnect-instagram/", views.SaveInstagramTokenAPI.as_view(), name="disconnect-instagram"),
+    # path("connect-instagram/", views.SaveInstagramTokenAPI.as_view(), name="connect-instagram"),
+    # path("disconnect-instagram/", views.SaveInstagramTokenAPI.as_view(), name="disconnect-instagram"),
     path('rest-auth/facebook/', views.FacebookLogin.as_view(), name='fb_login'),
-    path('instagram/', views.auth.InstagramAPIView.as_view(), name='instagram_login'),
+    path('instagram/connect/', views.auth.ConnectInstagramAPI.as_view(), name='instagram-connect'),
+    path('instagram/disconnect/', views.auth.DisconnectInstagramAPI.as_view(), name='instagram-disconnect'),
 ]

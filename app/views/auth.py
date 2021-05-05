@@ -1,3 +1,4 @@
+import requests
 from django.conf import settings
 from rest_framework.views import APIView
 from ..serializers import UserRegisterSerializer, CityListingSerializer
@@ -178,5 +179,47 @@ class InstagramAPIView(APIView):
             message = "Connected to Instagram successfully!"
             data = {"access_token": long_lived_token.access_token}
             return custom_response(True, status.HTTP_200_OK, message, data)
+        except Exception as inst:
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, str(inst))
+
+
+class ConnectInstagramAPI(APIView):
+    """
+    Class Instagram API
+    """
+
+    permission_classes = (IsAccountOwner,)
+
+    def post(self, request, format=None):
+        """
+        POST method to create the data
+        """
+        try:
+            code = request.data.get("code", None)
+            if not code:
+                message = "Instagram token is required!"
+                return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+            url = settings.INSTAGRAM_AUTH_ACCESS_TOKEN_URL
+            payload = {
+                'client_id': settings.INSTAGRAM_APP_ID,
+                'client_secret': settings.INSTAGRAM_APP_SECRET,
+                'grant_type': 'authorization_code',
+                'redirect_uri': settings.INSTAGRAM_REDIRECT_URL,
+                'code': code,
+            }
+            files = []
+            headers = {
+                'Cookie': request.headers['Cookie']
+            }
+            response = requests.request("POST", url, headers=headers, data=payload, files=files)
+            data = response.json()
+            if response.status_code == 200:
+                user = User.objects.get(pk=request.user.pk)
+                user.instagram_code = data['access_token']
+                user.save()
+                message = "Connected to Instagram successfully!"
+                return custom_response(True, status.HTTP_200_OK, message, data)
+            message = "Something went wrong!"
+            return custom_response(False, response.status_code, message, data)
         except Exception as inst:
             return custom_response(False, status.HTTP_400_BAD_REQUEST, str(inst))

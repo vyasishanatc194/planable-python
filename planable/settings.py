@@ -213,3 +213,4 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'ru_RU'}  # optional
 INSTAGRAM_APP_ID = "276073157557455"
 INSTAGRAM_APP_SECRET = "8180a1d314c9c24270c2da585de6b51d"
 INSTAGRAM_REDIRECT_URL = "https://planable.herokuapp.com/superadmin/"
+INSTAGRAM_AUTH_ACCESS_TOKEN_URL = "https://api.instagram.com/oauth/access_token"
