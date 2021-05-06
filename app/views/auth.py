@@ -199,27 +199,44 @@ class ConnectInstagramAPI(APIView):
             if not code:
                 message = "Instagram token is required!"
                 return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
-            url = settings.INSTAGRAM_AUTH_ACCESS_TOKEN_URL
-            payload = {
+            url_s = settings.INSTAGRAM_SHORT_ACCESS_TOKEN_URL
+            payload_s = {
                 'client_id': settings.INSTAGRAM_APP_ID,
                 'client_secret': settings.INSTAGRAM_APP_SECRET,
                 'grant_type': 'authorization_code',
                 'redirect_uri': settings.INSTAGRAM_REDIRECT_URL,
                 'code': code,
             }
-            files = []
-            headers = {
+            files_s = []
+            headers_s = {
                 'Cookie': request.headers['Cookie']
             }
-            response = requests.request("POST", url, headers=headers, data=payload, files=files)
-            data = response.json()
-            if response.status_code == 200:
-                user = User.objects.get(pk=request.user.pk)
-                user.instagram_code = data['access_token']
-                user.save()
-                message = "Connected to Instagram successfully!"
-                return custom_response(True, status.HTTP_200_OK, message, data)
-            message = "Something went wrong!"
-            return custom_response(False, response.status_code, message, data)
+            response_s = requests.request("POST", url_s, headers=headers_s, data=payload_s, files=files_s)
+            data_s = response_s.json()
+
+            if response_s.status_code == 200:
+                url_l = settings.INSTAGRAM_LONG_ACCESS_TOKEN_URL + \
+                        "?grant_type=ig_exchange_token" \
+                        "&client_secret=" + settings.INSTAGRAM_APP_SECRET + \
+                        "&access_token=" + data_s['access_token']
+
+                payload_l = {}
+                headers_l = {
+                    'Cookie': request.headers['Cookie']
+                }
+                response_l = requests.request("GET", url_l, headers=headers_l, data=payload_l)
+                data_l = response_l.json()
+                if response_l.status_code == 200:
+                    user = User.objects.get(pk=request.user.pk)
+                    user.instagram_code = data_l['access_token']
+                    user.save()
+                    message = "Connected to Instagram successfully!"
+                    return custom_response(True, status.HTTP_200_OK, message, data_l)
+                else:
+                    message = "Something went wrong!"
+                    return custom_response(False, response_l.status_code, message, data_l)
+            else:
+                message = "Something went wrong!"
+                return custom_response(False, response_s.status_code, message, data_s)
         except Exception as inst:
             return custom_response(False, status.HTTP_400_BAD_REQUEST, str(inst))
