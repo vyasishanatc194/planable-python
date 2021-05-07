@@ -199,44 +199,67 @@ class ConnectInstagramAPI(APIView):
             if not code:
                 message = "Instagram token is required!"
                 return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
-            url_s = settings.INSTAGRAM_SHORT_ACCESS_TOKEN_URL
-            payload_s = {
+            url_short = settings.INSTAGRAM_SHORT_ACCESS_TOKEN_URL
+            payload_short = {
                 'client_id': settings.INSTAGRAM_APP_ID,
                 'client_secret': settings.INSTAGRAM_APP_SECRET,
                 'grant_type': 'authorization_code',
                 'redirect_uri': settings.INSTAGRAM_REDIRECT_URL,
                 'code': code,
             }
-            files_s = []
-            headers_s = {
+            files_short = []
+            headers_short = {
                 'Cookie': request.headers['Cookie']
             }
-            response_s = requests.request("POST", url_s, headers=headers_s, data=payload_s, files=files_s)
-            data_s = response_s.json()
+            response_short = requests.request("POST", url_short, headers=headers_short,
+                                              data=payload_short, files=files_short)
+            data_short = response_short.json()
 
-            if response_s.status_code == 200:
-                url_l = settings.INSTAGRAM_LONG_ACCESS_TOKEN_URL + \
+            if response_short.status_code == 200:
+                url_long = settings.INSTAGRAM_LONG_ACCESS_TOKEN_URL + \
                         "?grant_type=ig_exchange_token" \
                         "&client_secret=" + settings.INSTAGRAM_APP_SECRET + \
-                        "&access_token=" + data_s['access_token']
+                        "&access_token=" + data_short['access_token']
 
-                payload_l = {}
-                headers_l = {
+                payload_long = {}
+                headers_long = {
                     'Cookie': request.headers['Cookie']
                 }
-                response_l = requests.request("GET", url_l, headers=headers_l, data=payload_l)
-                data_l = response_l.json()
-                if response_l.status_code == 200:
+                response_long = requests.request("GET", url_long, headers=headers_long,
+                                                 data=payload_long)
+                data_long = response_long.json()
+                if response_long.status_code == 200:
+                    url_media = settings.INSTAGRAM_USER_MEDIA_URL + \
+                          "?fields=media_type,media_url,thumbnail_url" \
+                          "&access_token=" + data_long['access_token']
+                    payload_media = {}
+                    headers_media = {
+                        'Cookie': request.headers['Cookie']
+                    }
+                    response_media = requests.request("GET", url_media, headers=headers_media,
+                                                      data=payload_media)
+                    data_media = response_media.json()
+                    post_list = data_media['data']
+                    final_list = []
+                    for i in post_list:
+                        if i['media_type'] == 'CAROUSEL_ALBUM':
+                            pass
+                        elif i['media_type'] == 'VIDEO':
+                            final_list.append(i['thumbnail_url'])
+                        else:
+                            final_list.append(i['media_url'])
+                    data_long["instagram_posts"] = final_list
+
                     user = User.objects.get(pk=request.user.pk)
-                    user.instagram_code = data_l['access_token']
+                    user.instagram_code = data_long['access_token']
                     user.save()
                     message = "Connected to Instagram successfully!"
-                    return custom_response(True, status.HTTP_200_OK, message, data_l)
+                    return custom_response(True, status.HTTP_200_OK, message, data_long)
                 else:
                     message = "Something went wrong!"
-                    return custom_response(False, response_l.status_code, message, data_l)
+                    return custom_response(False, response_long.status_code, message, data_long)
             else:
                 message = "Something went wrong!"
-                return custom_response(False, response_s.status_code, message, data_s)
+                return custom_response(False, response_short.status_code, message, data_short)
         except Exception as inst:
             return custom_response(False, status.HTTP_400_BAD_REQUEST, str(inst))

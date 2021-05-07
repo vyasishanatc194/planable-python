@@ -1,5 +1,7 @@
+import requests
+from django.conf import settings
 from rest_framework import fields, serializers
-from ..models import User, City
+from ..models import User, City, UserProfileImage
 from rest_framework.authtoken.models import Token
 
 
@@ -24,6 +26,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(required=True)
     city = serializers.CharField(required=True)
     date_of_birth = serializers.CharField(required=True)
+    profile_images = serializers.SerializerMethodField()
+    instagram_posts = serializers.SerializerMethodField("get_instagram_posts")
 
     class Meta:
         model = User
@@ -36,6 +40,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "password",
             "city",
             "date_of_birth",
+            "profile_images",
+            "instagram_posts",
         ]
 
         extra_kwargs = {"password": {"write_only": True}}
@@ -59,6 +65,43 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def get_token(self, obj):
         return f"Token {Token.objects.get_or_create(user=obj)[0]}"
+
+    def get_profile_images(self, instance):
+        # TODO: Facing circular import issue in the top level import.
+        from ..serializers import UserProfileImageSerializer
+        images = UserProfileImage.objects.filter(user=instance.pk)
+        image_serializer = UserProfileImageSerializer(
+            images, many=True, context={"request": self.context["request"]}
+        )
+        return image_serializer.data
+
+    def get_instagram_posts(self, instance):
+        try:
+            request = self.context.get('request')
+            access_token = instance.instagram_code
+
+            url = settings.INSTAGRAM_USER_MEDIA_URL + \
+                "?fields=media_type,media_url,thumbnail_url" \
+                "&access_token=" + access_token
+            payload = {}
+            headers = {
+                'Cookie': request.headers['Cookie']
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            post_list = data['data']
+            final_list = []
+            for i in post_list:
+                if i['media_type'] == 'CAROUSEL_ALBUM':
+                    pass
+                elif i['media_type'] == 'VIDEO':
+                    final_list.append(i['thumbnail_url'])
+                else:
+                    final_list.append(i['media_url'])
+            return final_list
+        except Exception as inst:
+            print(inst)
+            return []
 
 
 class UserViewSerializer(serializers.ModelSerializer):

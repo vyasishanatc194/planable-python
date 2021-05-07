@@ -1,3 +1,5 @@
+import requests
+from django.conf import settings
 from rest_framework import fields, serializers
 from ..models import UserProfileImage, User, City, PlanJoiningRequest, Plan
 from .auth_serializer import CityListingSerializer
@@ -24,6 +26,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profile_images = serializers.SerializerMethodField()
     plans_attended = serializers.SerializerMethodField()
     plans_hosted = serializers.SerializerMethodField()
+    instagram_posts = serializers.SerializerMethodField("get_instagram_posts")
 
     class Meta:
         model = User
@@ -37,6 +40,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "plans_attended",
             "plans_hosted",
             "profile_images",
+            "instagram_posts",
         ]
 
     def get_profile_images(self, instance):
@@ -53,6 +57,34 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_plans_hosted(self, instance):
         plans = Plan.objects.filter(user=instance.pk, active=True).count()
         return plans
+
+    def get_instagram_posts(self, instance):
+        try:
+            request = self.context.get('request')
+            access_token = instance.instagram_code
+
+            url = settings.INSTAGRAM_USER_MEDIA_URL + \
+                "?fields=media_type,media_url,thumbnail_url" \
+                "&access_token=" + access_token
+            payload = {}
+            headers = {
+                'Cookie': request.headers['Cookie']
+            }
+            response = requests.request("GET", url, headers=headers, data=payload)
+            data = response.json()
+            post_list = data['data']
+            final_list = []
+            for i in post_list:
+                if i['media_type'] == 'CAROUSEL_ALBUM':
+                    pass
+                elif i['media_type'] == 'VIDEO':
+                    final_list.append(i['thumbnail_url'])
+                else:
+                    final_list.append(i['media_url'])
+            return final_list
+        except Exception as inst:
+            print(inst)
+            return []
 
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
