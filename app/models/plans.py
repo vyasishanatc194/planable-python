@@ -54,6 +54,8 @@ class Plan(ActivityTracking):
     )
     hashtags = models.TextField(null=True, blank=True)
     featured = models.BooleanField(default=False)
+    latitude = models.CharField(max_length=155, blank=True, null=True)
+    longitude = models.CharField(max_length=155, blank=True, null=True)
 
     def __str__(self):
         return f"{self.pk}"

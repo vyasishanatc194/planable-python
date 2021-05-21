@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.views import APIView
 from planable.helpers import custom_response, serialized_response
 from rest_framework import status
@@ -11,6 +12,7 @@ from ..serializers import (
     HomeCategoryPlanListingSerializer,
 )
 import datetime
+import pgeocode
 
 
 class PlanCreateAPIView(APIView):
@@ -22,10 +24,27 @@ class PlanCreateAPIView(APIView):
     permission_classes = (IsAccountOwner,)
 
     def post(self, request, *args, **kwargs):
-        request.data["user"] = request.user.pk
+        data = request.data.copy()
+        data["user"] = request.user.pk
         message = "Plan created successfully!"
+        try:
+            postal_code = request.data['postal_code']
+            obj = PostalCode.objects.get(pk=postal_code)
+            code = obj.postal_code
+            nomi = pgeocode.Nominatim(settings.COUNTRY_CODE)
+            lat = str(nomi.query_postal_code(code).latitude)
+            long = str(nomi.query_postal_code(code).longitude)
+            if (lat or long) == 'nan':
+                lat = ''
+                long = ''
+        except Exception as inst:
+            print(inst)
+            lat = ''
+            long = ''
+        data['latitude'] = lat
+        data['longitude'] = long
         serializer = self.serializer_class(
-            data=request.data, context={"request": request}
+            data=data, context={"request": request}
         )
         response_status, result, message = serialized_response(serializer, message)
         status_code = (

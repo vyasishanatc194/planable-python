@@ -216,3 +216,6 @@ INSTAGRAM_REDIRECT_URL = "https://planable.herokuapp.com/superadmin/"
 INSTAGRAM_SHORT_ACCESS_TOKEN_URL = "https://api.instagram.com/oauth/access_token"
 INSTAGRAM_LONG_ACCESS_TOKEN_URL = "https://graph.instagram.com/access_token"
 INSTAGRAM_USER_MEDIA_URL = "https://graph.instagram.com/me/media"
+
+# Country code
+COUNTRY_CODE = "GB"

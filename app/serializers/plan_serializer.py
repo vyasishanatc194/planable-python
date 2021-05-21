@@ -53,6 +53,8 @@ class PlanCreateSerializer(serializers.ModelSerializer):
             "category",
             "plan_image",
             "hashtags",
+            "latitude",
+            "longitude"
         ]
 
 
@@ -105,7 +107,9 @@ class PlanDetailSerializer(serializers.ModelSerializer):
             "plan_image",
             "hashtags",
             "request_status",
-            "joinees"
+            "joinees",
+            "latitude",
+            "longitude"
         ]
 
     def get_joinees(self, instance):
@@ -117,9 +121,11 @@ class PlanDetailSerializer(serializers.ModelSerializer):
         return joinees_data
 
     def get_hashtags(self, instance):
-        hashtags = instance.hashtags.split(",")
-        formatted_hashtags = [hashtag.strip() for hashtag in hashtags]
-        return formatted_hashtags
+        if instance.hashtags:
+            hashtags = instance.hashtags.split(",")
+            formatted_hashtags = [hashtag.strip() for hashtag in hashtags]
+            return formatted_hashtags
+        return []
 
     def get_request_status(self, instance):
         user = self.context['request'].user
