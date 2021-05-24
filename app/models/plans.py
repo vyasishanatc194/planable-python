@@ -34,13 +34,7 @@ class Plan(ActivityTracking):
         null=True,
         blank=True,
     )
-    postal_code = models.ForeignKey(
-        "app.PostalCode",
-        on_delete=models.CASCADE,
-        related_name="PostalCode",
-        null=True,
-        blank=True,
-    )
+    postal_code = models.CharField(max_length=20, blank=True, null=True)
     spaces_available = models.PositiveIntegerField(null=True, blank=True)
     category = models.ForeignKey(
         "app.Category",

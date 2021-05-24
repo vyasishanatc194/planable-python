@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Q
 from rest_framework.views import APIView
 from planable.helpers import custom_response, serialized_response
 from rest_framework import status
@@ -28,9 +29,7 @@ class PlanCreateAPIView(APIView):
         data["user"] = request.user.pk
         message = "Plan created successfully!"
         try:
-            postal_code = request.data['postal_code']
-            obj = PostalCode.objects.get(pk=postal_code)
-            code = obj.postal_code
+            code = request.data['postal_code']
             nomi = pgeocode.Nominatim(settings.COUNTRY_CODE)
             lat = str(nomi.query_postal_code(code).latitude)
             long = str(nomi.query_postal_code(code).longitude)
@@ -124,26 +123,14 @@ class PlanListingAPIView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        category = request.GET.get("category", None)
-        search = request.GET.get("search", None)
-        location = request.GET.get("location", None)
-        today = request.GET.get("today", None)
-        tomorrow = request.GET.get("tomorrow", None)
+        query = request.GET.get("search", None)
         plans = Plan.objects.filter(
             active=True, plan_datetime__gte=datetime.datetime.now()
         )
-        if tomorrow:
-            plans = plans.filter(
-                plan_datetime__date=datetime.datetime.now() + datetime.timedelta(days=1)
-            )
-        if today:
-            plans = plans.filter(plan_datetime__date=datetime.datetime.now())
-        if category:
-            plans = plans.filter(category=category)
-        if search:
-            plans = plans.filter(title__icontains=search)
-        if location:
-            plans = plans.filter(city__city__icontains=location)
+        if query:
+            plans = plans.filter(Q(category__category_name__icontains=query)
+                                 | Q(title__icontains=query)
+                                 | Q(city__city__icontains=query))
 
         serializer = self.serializer_class(
             plans, many=True, context={"request": request}
@@ -188,8 +175,12 @@ class HomePlanListingAPIView(APIView):
         serializer = self.serializer_class(
             categories, many=True, context={"request": request}
         )
+        final_list = []
         message = "Plans fetched Successfully!"
-        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+        for obj in serializer.data:
+            if obj['plans']:
+                final_list.append(obj)
+        return custom_response(True, status.HTTP_200_OK, message, final_list)
 
 
 class PlanAttendedAPIView(APIView):

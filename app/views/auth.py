@@ -145,7 +145,7 @@ class FacebookLogin(SocialLoginView):
         status_code = status.HTTP_200_OK
         message = "Login Successful!"
         result = serializer.data
-        result_data = {'token': "Token " + result['key'], 'user': self.user.id}
+        result_data = {'token': "Token " + result['key'], 'user': str(self.user.id)}
         return custom_response(response_status, status_code, message, result_data)
 
 

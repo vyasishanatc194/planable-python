@@ -85,7 +85,7 @@ class PlanDetailSerializer(serializers.ModelSerializer):
 
     plan_datetime = serializers.SerializerMethodField()
     city = CityListingSerializer()
-    postal_code = PostalCodeListingSerializer()
+    # postal_code = PostalCodeListingSerializer()
     category = CategoryListingSerializer()
     user = UserViewSerializer()
     joinees = serializers.SerializerMethodField()
