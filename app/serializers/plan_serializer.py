@@ -83,6 +83,7 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     Plan Detail serializer
     """
 
+    plan_datetime = serializers.SerializerMethodField()
     city = CityListingSerializer()
     postal_code = PostalCodeListingSerializer()
     category = CategoryListingSerializer()
@@ -111,6 +112,9 @@ class PlanDetailSerializer(serializers.ModelSerializer):
             "latitude",
             "longitude"
         ]
+
+    def get_plan_datetime(self, instance):
+        return f"{instance.plan_datetime.date()} {instance.plan_datetime.time()}"
 
     def get_joinees(self, instance):
         joinees = PlanJoiningRequest.objects.filter(plan=instance, status='ACCEPTED')
