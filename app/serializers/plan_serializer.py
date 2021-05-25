@@ -2,6 +2,7 @@ from rest_framework import fields, serializers
 from ..models import Plan, Category, PostalCode, PlanJoiningRequest, UserProfileImage
 from ..serializers import CityListingSerializer, UserViewSerializer
 import datetime
+from planable.helpers import get_share_link
 
 
 class PlanJoiningRequestListingSerializer(serializers.ModelSerializer):
@@ -91,6 +92,7 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     joinees = serializers.SerializerMethodField()
     hashtags = serializers.SerializerMethodField()
     request_status = serializers.SerializerMethodField()
+    share_link = serializers.SerializerMethodField()
 
     class Meta:
         model = Plan
@@ -110,7 +112,8 @@ class PlanDetailSerializer(serializers.ModelSerializer):
             "request_status",
             "joinees",
             "latitude",
-            "longitude"
+            "longitude",
+            "share_link"
         ]
 
     def get_plan_datetime(self, instance):
@@ -139,6 +142,19 @@ class PlanDetailSerializer(serializers.ModelSerializer):
                 return request_status[0].status
         return False
 
+    def get_share_link(self, obj):
+        """Get Plan share link"""
+        if obj.share_link:
+            return obj.share_link
+        try:
+            request = self.context.get('request')
+            short_link = get_share_link(request)
+            obj.share_link = short_link
+            obj.save()
+            return short_link
+        except Exception as inst:
+            print(inst)
+            return ""
 
 
 class HomeCategoryPlanListingSerializer(serializers.ModelSerializer):

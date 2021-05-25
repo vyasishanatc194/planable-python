@@ -46,7 +46,7 @@ class ProfileImageAPIView(APIView):
             return custom_response(False, status.HTTP_200_OK, message)
         profile_images.delete()
         message = "Image removed successfully!"
-        return custom_response(True, status.HTTP_200_OK, message)
+        return custom_response(True, status.HTTP_200_OK, message, [])
 
 
 class UserProfileAPIView(APIView):

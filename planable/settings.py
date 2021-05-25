@@ -219,3 +219,7 @@ INSTAGRAM_USER_MEDIA_URL = "https://graph.instagram.com/me/media"
 
 # Country code
 COUNTRY_CODE = "GB"
+
+# Firebase Dynamic Links
+FIREBASE_API_KEY = "ADD-YOUR-WEB-API-KEY-HERE"
+FIREBASE_DOMAIN = "planable.page.link"

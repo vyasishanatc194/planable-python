@@ -50,6 +50,7 @@ class Plan(ActivityTracking):
     featured = models.BooleanField(default=False)
     latitude = models.CharField(max_length=155, blank=True, null=True)
     longitude = models.CharField(max_length=155, blank=True, null=True)
+    share_link = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.pk}"

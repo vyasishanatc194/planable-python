@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework.pagination import PageNumberPagination
-
+from firebase_dynamic_links import DynamicLinks
 from rest_framework import status
 from rest_framework.response import Response
 import os
@@ -62,3 +62,14 @@ def delete_media(path):
     if(os.path.exists(os.path.join(media_root, str(path))) and path):
         os.remove(os.path.join(media_root, str(path)))
     return True
+
+
+def get_share_link(request):
+    """Get shareable link"""
+
+    url = request.build_absolute_uri()
+    api_key = str(settings.FIREBASE_API_KEY)
+    domain = str(settings.FIREBASE_DOMAIN)
+    dl = DynamicLinks(api_key, domain)
+    short_link = dl.generate_dynamic_link(url, True)
+    return short_link
