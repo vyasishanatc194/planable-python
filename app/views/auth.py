@@ -139,10 +139,11 @@ class FacebookLogin(SocialLoginView):
         response_status = True
         status_code = status.HTTP_200_OK
         message = "Login Successful!"
-        result_data = {
-            # "token": f"Token {Token.objects.get_or_create(user=self.user.id)[0]}",
-            "user": self.user.id
-        }
+        # result_data = {
+        #     "token": f"Token {Token.objects.get_or_create(user=self.user.id)[0]}",
+        #     "user": self.user.id
+        # }
+        result_data = []
         return custom_response(response_status, status_code, message, result_data)
 
 
