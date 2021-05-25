@@ -10,6 +10,7 @@ from ..models import User, City
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
 from instagram_basic_display.InstagramBasicDisplay import InstagramBasicDisplay
+from rest_framework.authtoken.models import Token
 
 
 class SignUpApiView(APIView):
@@ -135,17 +136,13 @@ class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
 
     def get_response(self):
-        serializer_class = self.get_response_serializer()
-        data = {
-            'user': self.user,
-            'key': self.token
-        }
-        serializer = serializer_class(instance=data, context={'request': self.request})
         response_status = True
         status_code = status.HTTP_200_OK
         message = "Login Successful!"
-        result = serializer.data
-        result_data = {'token': "Token " + result['key'], 'user': str(self.user.id)}
+        result_data = {
+            # "token": f"Token {Token.objects.get_or_create(user=self.user.id)[0]}",
+            "user": self.user.id
+        }
         return custom_response(response_status, status_code, message, result_data)
 
 
