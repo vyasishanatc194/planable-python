@@ -26,6 +26,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(required=True)
     city = serializers.CharField(required=True)
     date_of_birth = serializers.CharField(required=True)
+    single_profile_image = serializers.SerializerMethodField("get_single_profile_image")
     profile_images = serializers.SerializerMethodField()
     instagram_posts = serializers.SerializerMethodField("get_instagram_posts")
 
@@ -40,6 +41,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             "password",
             "city",
             "date_of_birth",
+            "single_profile_image",
             "profile_images",
             "instagram_posts",
         ]
@@ -65,6 +67,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def get_token(self, obj):
         return f"Token {Token.objects.get_or_create(user=obj)[0]}"
+
+    def get_single_profile_image(self, obj):
+        request = self.context.get('request')
+        images = UserProfileImage.objects.filter(user=obj.pk)
+        if images.exists():
+            image = images.first()
+            return request.build_absolute_uri(image.profile_image.url)
+        return ""
 
     def get_profile_images(self, instance):
         # TODO: Facing circular import issue in the top level import.

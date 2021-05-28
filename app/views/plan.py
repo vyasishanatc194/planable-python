@@ -67,8 +67,13 @@ class CategoryListingAPIView(APIView):
         if featured:
             categories = categories.filter(featured=True)
 
+        final_list = []
+        for category in categories:
+            if Plan.objects.filter(category=category.id).exists():
+                final_list.append(category)
+
         serializer = self.serializer_class(
-            categories, many=True, context={"request": request}
+            final_list, many=True, context={"request": request}
         )
         message = "Categories fetched Successfully!"
         return custom_response(True, status.HTTP_200_OK, message, serializer.data)
@@ -123,10 +128,13 @@ class PlanListingAPIView(APIView):
     permission_classes = ()
 
     def get(self, request):
+        category = request.GET.get("category", None)
         query = request.GET.get("search", None)
         plans = Plan.objects.filter(
             active=True, plan_datetime__gte=datetime.datetime.now()
         )
+        if category:
+            plans = plans.filter(category=category)
         if query:
             plans = plans.filter(Q(category__category_name__icontains=query)
                                  | Q(title__icontains=query)

@@ -23,6 +23,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     """
 
     city = CityListingSerializer()
+    single_profile_image = serializers.SerializerMethodField("get_single_profile_image")
     profile_images = serializers.SerializerMethodField()
     plans_attended = serializers.SerializerMethodField()
     plans_hosted = serializers.SerializerMethodField()
@@ -39,9 +40,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "date_of_birth",
             "plans_attended",
             "plans_hosted",
+            "single_profile_image",
             "profile_images",
             "instagram_posts",
         ]
+
+    def get_single_profile_image(self, obj):
+        request = self.context.get('request')
+        images = UserProfileImage.objects.filter(user=obj.pk)
+        if images.exists():
+            image = images.first()
+            return request.build_absolute_uri(image.profile_image.url)
+        return ""
 
     def get_profile_images(self, instance):
         images = UserProfileImage.objects.filter(user=instance.pk)
