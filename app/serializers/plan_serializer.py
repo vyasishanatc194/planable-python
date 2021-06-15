@@ -93,6 +93,7 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     hashtags = serializers.SerializerMethodField()
     request_status = serializers.SerializerMethodField()
     share_link = serializers.SerializerMethodField()
+    is_already_applied = serializers.SerializerMethodField("get_already_applied")
 
     class Meta:
         model = Plan
@@ -113,7 +114,8 @@ class PlanDetailSerializer(serializers.ModelSerializer):
             "joinees",
             "latitude",
             "longitude",
-            "share_link"
+            "share_link",
+            "is_already_applied"
         ]
 
     def get_plan_datetime(self, instance):
@@ -155,6 +157,18 @@ class PlanDetailSerializer(serializers.ModelSerializer):
         except Exception as inst:
             print(inst)
             return ""
+
+    def get_already_applied(self, obj):
+        """Get already applied flag"""
+        user = self.context['request'].user
+        try:
+            plan_request = PlanJoiningRequest.objects.filter(plan=obj.id, user=user)
+            if plan_request.exists():
+                return True
+            return False
+        except Exception as inst:
+            print(inst)
+            return False
 
 
 class HomeCategoryPlanListingSerializer(serializers.ModelSerializer):
