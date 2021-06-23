@@ -11,6 +11,7 @@ from ..serializers import (
     PostalCodeListingSerializer,
     PlanDetailSerializer,
     HomeCategoryPlanListingSerializer,
+    PlanSerializer
 )
 import datetime
 import pgeocode
@@ -124,7 +125,7 @@ class PlanListingAPIView(APIView):
     Plan listing view with filters
     """
 
-    serializer_class = PlanDetailSerializer
+    serializer_class = PlanSerializer
     permission_classes = ()
 
     def get(self, request):

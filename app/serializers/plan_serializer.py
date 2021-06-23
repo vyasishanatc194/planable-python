@@ -79,11 +79,8 @@ class PostalCodeListingSerializer(serializers.ModelSerializer):
         fields = ["id", "city", "postal_code"]
 
 
-class PlanDetailSerializer(serializers.ModelSerializer):
-    """
-    Plan Detail serializer
-    """
 
+class PlanSerializer(serializers.ModelSerializer):
     plan_datetime = serializers.SerializerMethodField()
     city = CityListingSerializer()
     # postal_code = PostalCodeListingSerializer()
@@ -169,6 +166,110 @@ class PlanDetailSerializer(serializers.ModelSerializer):
         except Exception as inst:
             print(inst)
             return False
+
+
+
+class PlanDetailSerializer(serializers.ModelSerializer):
+    """
+    Plan Detail serializer
+    """
+
+    plan_datetime = serializers.SerializerMethodField()
+    city = CityListingSerializer()
+    # postal_code = PostalCodeListingSerializer()
+    category = CategoryListingSerializer()
+    user = UserViewSerializer()
+    joinees = serializers.SerializerMethodField()
+    hashtags = serializers.SerializerMethodField()
+    request_status = serializers.SerializerMethodField()
+    share_link = serializers.SerializerMethodField()
+    is_already_applied = serializers.SerializerMethodField("get_already_applied")
+    similar_plans = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Plan
+        fields = [
+            "id",
+            "title",
+            "user",
+            "description",
+            "plan_datetime",
+            "location",
+            "city",
+            "postal_code",
+            "spaces_available",
+            "category",
+            "plan_image",
+            "hashtags",
+            "request_status",
+            "joinees",
+            "latitude",
+            "longitude",
+            "share_link",
+            "is_already_applied",
+            "similar_plans"
+        ]
+
+    def get_plan_datetime(self, instance):
+        return f"{instance.plan_datetime.date()} {instance.plan_datetime.time()}"
+
+    def get_joinees(self, instance):
+        joinees = PlanJoiningRequest.objects.filter(plan=instance, status='ACCEPTED')
+        serializer = PlanJoiningRequestListingSerializer(joinees, many=True, context = {'request': self.context['request']})
+        joinees_data = {}
+        joinees_data['count'] = joinees.count()
+        joinees_data['data'] = serializer.data
+        return joinees_data
+
+    def get_hashtags(self, instance):
+        if instance.hashtags:
+            hashtags = instance.hashtags.split(",")
+            formatted_hashtags = [hashtag.strip() for hashtag in hashtags]
+            return formatted_hashtags
+        return []
+
+    def get_request_status(self, instance):
+        user = self.context['request'].user
+        if not user.is_anonymous:
+            request_status = PlanJoiningRequest.objects.filter(plan=instance, user=user)
+            if request_status:
+                return request_status[0].status
+        return False
+
+    def get_share_link(self, obj):
+        """Get Plan share link"""
+        if obj.share_link:
+            return obj.share_link
+        try:
+            request = self.context.get('request')
+            short_link = get_share_link(request)
+            obj.share_link = short_link
+            obj.save()
+            return short_link
+        except Exception as inst:
+            print(inst)
+            return ""
+
+    def get_already_applied(self, obj):
+        """Get already applied flag"""
+        user = self.context['request'].user
+        try:
+            plan_request = PlanJoiningRequest.objects.filter(plan=obj.id, user=user)
+            if plan_request.exists():
+                return True
+            return False
+        except Exception as inst:
+            print(inst)
+            return False
+
+    def get_similar_plans(self, obj):
+        category_name = obj.category if obj.category else None
+        if category_name:
+            plans = Plan.objects.filter(category=category_name).exclude(id=obj.id)
+            serializer = PlanSerializer(plans,many=True, context={'request': self.context['request']})
+            return serializer.data
+
+        return None
 
 
 class HomeCategoryPlanListingSerializer(serializers.ModelSerializer):

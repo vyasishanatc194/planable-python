@@ -16,6 +16,7 @@ from .plan_requests_serializer import (
 )
 
 from .plan_serializer import (
+    PlanSerializer,
     PlanCreateSerializer,
     CategoryListingSerializer,
     PostalCodeListingSerializer,
