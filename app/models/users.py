@@ -58,6 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         unique=True,
         verbose_name=_("Unique Id"),
     )
+    password_reset_link = models.UUIDField(unique=True, null=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

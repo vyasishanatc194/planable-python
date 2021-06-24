@@ -10,7 +10,22 @@ from ..models import User, City
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
 from instagram_basic_display.InstagramBasicDisplay import InstagramBasicDisplay
+from django.contrib.sites.shortcuts import get_current_site
 from rest_framework.authtoken.models import Token
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+import uuid
+import environ
+
+
+env = environ.Env()
+environ.Env.read_env(str(".env"))
+
+
+
+SENDGRID_AUTH_KEY='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'
+
+sg = SendGridAPIClient(api_key=SENDGRID_AUTH_KEY)
 
 
 class SignUpApiView(APIView):
@@ -96,6 +111,32 @@ class LogoutAPIView(APIView):
         logout(request)
         message = "Logout successful!"
         return custom_response(True, status.HTTP_200_OK, message)
+
+
+class ForgotPassword(APIView):
+
+    def post(self, request):
+        email = request.data.get("email", None)
+        if not email:
+            message = "Email is required filed."
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+        user = User.objects.filter(email=email,is_active=True)
+        if not user:
+            message = "User not found."
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+        user[0].password_reset_link = uuid.uuid4()
+        user[0].save()
+        current_site = f'https://planable.herokuapp.com/reset-password-view/'
+        text_content = f"Hello, \nYou recently requested to reset your password for your account. Please click the below link to change your password. \n {current_site}{user[0].password_reset_link}/"
+        mail = Mail(subject="Forgot Password Reset Link",
+                    from_email="dhruvil.citrusbug@gmail.com",
+                    to_emails=email,
+                    plain_text_content=text_content)
+        sg.send(mail)
+
+        message = "Mail Sent Successfully."
+        return custom_response(False, status.HTTP_200_OK, message)
+
 
 
 class SaveInstagramTokenAPI(APIView):

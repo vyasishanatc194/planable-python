@@ -6,6 +6,7 @@ from .auth import (
     SaveInstagramTokenAPI,
     DisconnectInstagramAPI,
     FacebookLogin,
+    ForgotPassword
 )
 from .profile import ProfileImageAPIView, UserProfileAPIView, ViewProfileAPIView
 from .plan import (

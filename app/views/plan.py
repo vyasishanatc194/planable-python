@@ -180,16 +180,18 @@ class HomePlanListingAPIView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        categories = Category.objects.filter(featured=True)
-        serializer = self.serializer_class(
-            categories, many=True, context={"request": request}
-        )
-        final_list = []
+        plans = Plan.objects.filter(active=True).order_by('plan_datetime__date')
+        data = []
+        dates_filtered = {}
+        for plan in plans:
+            plans_date = plans.filter(plan_datetime__date=plan.plan_datetime.date())
+            serialize = PlanSerializer(plans_date,many=True,context={'request':request})
+            if str(plan.plan_datetime.date()) not in dates_filtered.keys():
+                dict_plans = {'plan_date':plan.plan_datetime.date(),'plans':serialize.data}
+                data.append(dict_plans)
+                dates_filtered[str(plan.plan_datetime.date())] = True
         message = "Plans fetched Successfully!"
-        for obj in serializer.data:
-            if obj['plans']:
-                final_list.append(obj)
-        return custom_response(True, status.HTTP_200_OK, message, final_list)
+        return custom_response(True, status.HTTP_200_OK, message, data)
 
 
 class PlanAttendedAPIView(APIView):

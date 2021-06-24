@@ -88,8 +88,7 @@ ROOT_URLCONF = 'planable.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-        ],
+        'DIRS': [path.join(BASE_DIR,'templates')],
         'OPTIONS': {
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
