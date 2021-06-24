@@ -180,7 +180,7 @@ class HomePlanListingAPIView(APIView):
     permission_classes = ()
 
     def get(self, request):
-        plans = Plan.objects.filter(active=True).order_by('plan_datetime__date')
+        plans = Plan.objects.filter(active=True,plan_datetime__date__gte=datetime.datetime.now().date()).order_by('plan_datetime__date')
         data = []
         dates_filtered = {}
         for plan in plans:
