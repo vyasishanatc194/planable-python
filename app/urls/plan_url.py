@@ -18,5 +18,6 @@ urlpatterns = [
     ),
     path("home-plans/", views.HomePlanListingAPIView.as_view(), name="home-plans"),
     path("attended-plans/", views.PlanAttendedAPIView.as_view(), name="attended-plans"),
-    
+    path("attended-plans-id/", views.PlanAttendedUserAPIView.as_view(), name="attended-plans-id"),
+
 ]

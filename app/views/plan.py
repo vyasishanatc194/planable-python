@@ -212,3 +212,27 @@ class PlanAttendedAPIView(APIView):
         )
         message = "Plans fetched Successfully!"
         return custom_response(True, status.HTTP_200_OK, message, serializer.data)
+
+
+
+class PlanAttendedUserAPIView(APIView):
+    """
+    My plans listing view
+    """
+
+    serializer_class = PlanSerializer
+
+    def get(self, request):
+        user_id = request.GET.get('user_id',None)
+        joining_requests = PlanJoiningRequest.objects.filter(user=user_id, status="ACCEPTED")
+        if not joining_requests:
+            message = "Plans attended not found!"
+            return custom_response(False, status.HTTP_400_BAD_REQUEST, message)
+        plans = []
+        for joining_request in joining_requests:
+            plans.append(joining_request.plan)
+        serializer = self.serializer_class(
+            plans, many=True, context={"request": request}
+        )
+        message = "Plans fetched Successfully!"
+        return custom_response(True, status.HTTP_200_OK, message, serializer.data)
