@@ -28,7 +28,7 @@ class PlanCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
         data["user"] = request.user.pk
-        message = "Plan created successfully"
+        message = "Plan created successfully!"
         try:
             code = request.data['postal_code']
             nomi = pgeocode.Nominatim(settings.COUNTRY_CODE)
