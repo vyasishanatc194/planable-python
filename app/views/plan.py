@@ -50,7 +50,7 @@ class PlanCreateAPIView(APIView):
         status_code = (
             status.HTTP_201_CREATED if response_status else status.HTTP_400_BAD_REQUEST
         )
-        return custom_response(response_status, status_code, message, result)
+        return custom_response(response_status, status_code, message, result=[])
 
 
 class CategoryListingAPIView(APIView):
