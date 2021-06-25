@@ -28,7 +28,7 @@ class PlanCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
         data["user"] = request.user.pk
-        message = "Plan created successfully!"
+        message = "Plan created successfully"
         try:
             code = request.data['postal_code']
             nomi = pgeocode.Nominatim(settings.COUNTRY_CODE)
@@ -50,7 +50,7 @@ class PlanCreateAPIView(APIView):
         status_code = (
             status.HTTP_201_CREATED if response_status else status.HTTP_400_BAD_REQUEST
         )
-        return custom_response(response_status, status_code, message, [])
+        return custom_response(response_status, status_code, message)
 
 
 class CategoryListingAPIView(APIView):
