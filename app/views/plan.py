@@ -153,7 +153,7 @@ class MyPlanListingAPIView(APIView):
     My plans listing view
     """
 
-    serializer_class = PlanDetailSerializer
+    serializer_class = PlanSerializer
     permission_classes = (IsAccountOwner,)
 
     def get(self, request):
@@ -199,7 +199,7 @@ class PlanAttendedAPIView(APIView):
     My plans listing view
     """
 
-    serializer_class = PlanDetailSerializer
+    serializer_class = PlanSerializer
     permission_classes = (IsAccountOwner,)
 
     def get(self, request):

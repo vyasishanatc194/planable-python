@@ -222,3 +222,7 @@ COUNTRY_CODE = "GB"
 # Firebase Dynamic Links
 FIREBASE_API_KEY = "AIzaSyB20pRu7sVTLn0YAbJu-63E8XRBWeSCe1E"
 FIREBASE_DOMAIN = "planable.page.link"
+
+
+MEDIA_ROOT = (str(BASE_DIR)+ "/media")
+MEDIA_URL = "/media/"

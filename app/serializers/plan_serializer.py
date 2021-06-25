@@ -283,6 +283,6 @@ class HomeCategoryPlanListingSerializer(serializers.ModelSerializer):
 
     def get_plans(self, instance):
         plans = Plan.objects.filter(active=True, plan_datetime__gte=datetime.datetime.now(), category=instance)[:5]   
-        serializer = PlanDetailSerializer(plans, many=True, context={'request': self.context['request']})
+        serializer = PlanSerializer(plans, many=True, context={'request': self.context['request']})
         return serializer.data
 

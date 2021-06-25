@@ -135,7 +135,7 @@ class ForgotPassword(APIView):
         sg.send(mail)
 
         message = "Mail Sent Successfully."
-        return custom_response(False, status.HTTP_200_OK, message)
+        return custom_response(True, status.HTTP_200_OK, message)
 
 
 

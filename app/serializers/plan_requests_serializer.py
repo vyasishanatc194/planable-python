@@ -1,7 +1,7 @@
 from rest_framework import fields, serializers
 from ..models import PlanJoiningRequest
 from .auth_serializer import UserViewSerializer
-from .plan_serializer import PlanDetailSerializer
+from .plan_serializer import PlanDetailSerializer, PlanSerializer
 
 
 class PlanJoiningRequestSerializer(serializers.ModelSerializer):
@@ -19,7 +19,7 @@ class PlanRequestDetailSerializer(serializers.ModelSerializer):
     PlanJoiningRequest serializer
     """
     user = UserViewSerializer()
-    plan = PlanDetailSerializer()
+    plan = PlanSerializer()
 
     class Meta:
         model = PlanJoiningRequest
