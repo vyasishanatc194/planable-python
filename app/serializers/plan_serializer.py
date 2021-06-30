@@ -265,7 +265,7 @@ class PlanDetailSerializer(serializers.ModelSerializer):
     def get_similar_plans(self, obj):
         category_name = obj.category if obj.category else None
         if category_name:
-            plans = Plan.objects.filter(category=category_name).exclude(id=obj.id)
+            plans = Plan.objects.filter(category=category_name).exclude(id=obj.id).distinct()[:5]
             serializer = PlanSerializer(plans,many=True, context={'request': self.context['request']})
             return serializer.data
 

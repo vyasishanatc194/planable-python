@@ -45,6 +45,24 @@ def get_pagination_response(model_class, request, serializer_class, context):
     return result
 
 
+def get_custom_pagination_response(model_class, request):
+    result = {}
+    model_response = PAGINATOR.paginate_queryset(model_class, request)
+    result.update({'data': model_response})
+    current = PAGINATOR.page.number
+    next_page = 0 if PAGINATOR.get_next_link() is None else current + 1
+    previous_page = 0 if PAGINATOR.get_previous_link() is None else current - 1
+    result.update({'links': {
+        'current': current,
+        'next': next_page,
+        'previous': previous_page,
+        'total': PAGINATOR.page.paginator.count,
+        'last': PAGINATOR.page.paginator.num_pages,
+    }})
+    return result
+
+
+
 def serialized_response(serializer, message):
     if serializer.is_valid():
         serializer.save()

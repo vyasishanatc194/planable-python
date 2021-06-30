@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db.models import Q
 from rest_framework.views import APIView
-from planable.helpers import custom_response, serialized_response
+from planable.helpers import custom_response, serialized_response, get_custom_pagination_response
 from rest_framework import status
 from planable.permissions import IsAccountOwner
 from ..models import Plan, Category, PostalCode, PlanJoiningRequest
@@ -190,8 +190,9 @@ class HomePlanListingAPIView(APIView):
                 dict_plans = {'plan_date':plan.plan_datetime.date(),'plans':serialize.data}
                 data.append(dict_plans)
                 dates_filtered[str(plan.plan_datetime.date())] = True
+        data_paginator = get_custom_pagination_response(model_class=data,request=request)
         message = "Plans fetched Successfully!"
-        return custom_response(True, status.HTTP_200_OK, message, data)
+        return custom_response(True, status.HTTP_200_OK, message, data_paginator)
 
 
 class PlanAttendedAPIView(APIView):
