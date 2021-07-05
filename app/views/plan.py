@@ -190,9 +190,8 @@ class HomePlanListingAPIView(APIView):
                 dict_plans = {'plan_date':plan.plan_datetime.date(),'plans':serialize.data}
                 data.append(dict_plans)
                 dates_filtered[str(plan.plan_datetime.date())] = True
-        data_paginator = get_custom_pagination_response(model_class=data,request=request)
         message = "Plans fetched Successfully!"
-        return custom_response(True, status.HTTP_200_OK, message, data_paginator)
+        return get_custom_pagination_response(model_class=data,request=request,message=message)
 
 
 class PlanAttendedAPIView(APIView):
